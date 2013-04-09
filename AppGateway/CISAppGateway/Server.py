@@ -3,6 +3,7 @@ import tempfile
 import uuid
 import stat
 import logging
+
 try:
     import json
 except:
@@ -145,7 +146,7 @@ def output(id):
        not os.path.exists(os.path.join(conf.gate_path_failed, id)):
         return "Error: Job with ID:%s did not finish." % id
 
-    return conf.gate_path_output + '/' + id
+    return conf.gate_url_output + id
 
 
 def delete(id):
