@@ -47,7 +47,7 @@ class Config(dict):
             'removed'
         )
         #: Supported services
-        self.allowed_services = ('Test', 'MultiNest')
+        self.allowed_services = ('Test', 'MultiNest', 'EPRCore')
         self.gate_url_output = 'http://localhost:8000/'
         #: Path to the shared storage used as communication medium with
         #: AppServer
