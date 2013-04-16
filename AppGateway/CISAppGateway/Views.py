@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+"""
+Flask based implementation of AppGateway REST API. Functions in this module
+implement server response to API requests - each request is defined as specific
+URL.
+"""
+
 from flask import request
 
 from CISAppGateway import app, Server
@@ -6,76 +12,19 @@ from CISAppGateway import app, Server
 
 @app.route('/')
 def index():
-    help = """CIŚ webservice REST api.</br>
-</br>
-This is a proof of concept implementation.</br>
-</br>
-* Access</br>
-[host] = http://buldog.fuw.edu.pl/webservice</br>
-</br>
-* Supported services</br>
-</br>
-    ** Test</br>
-    *** Attributes:</br>
-    *** A : int(0,10000)</br>
-    *** B : float(-100,100)</br>
-    *** C : ["alpha", "beta", "gamma", "delta"]</br>
-</br>
-    ** MultiNest</br>
-    *** Attributes:</br>
-    *** PBS_NODES : int(1,4)</br>
-    *** PBS_PPN : int(1,64)</br>
-    *** argument : float(-10,10)</br>
-    *** live_points : int(0,10000)</br>
-    *** function : ["sin", "cos", "log"]</br>
-</br>
-* Job submission</br>
-Jobs are subbited via POST request on [host]/submit</br>
-The POST request should contain job attributes either in JSON format or as
-FORM </br>
-data:</br>
-</br>
-    curl -X POST -d "service=Test&attr1=value1&attr2=value2" [host]/submit</br>
-    curl -X POST -H "Content-type: application/json" [host]/submit \</br>
-    -d '{"service":"MultiNest", "live_points":"1000", "nodes":"3"}'</br>
-</br>
-The request will return an job ID e.g.:
- MultiNest_40ecad7d-41be-48bc-9d87-131f894052a8_nlfsvY</br>
-</br>
-* Verifying job status</br>
-Job status can be queried by GET on [host]/status/[id].
-Where [id] is the string</br>
-returned during submission.</br>
-</br>
-    curl
- [host]/status/MultiNest_40ecad7d-41be-48bc-9d87-131f894052a8_nlfsvY</br>
-</br>
-The request returns: "queued", "running", "done" or an error.</br>
-</br>
-* Job output</br>
-The http/ftp base URL for the output files is retrieved as
- [host]/output/[id]</br>
-</br>
-    curl
- [host]/output/MultiNest_40ecad7d-41be-48bc-9d87-131f894052a8_nlfsvY</br>
-</br>
-* Job can be scheduled for removal: [host]/delete/[id]</br>
-</br>
-    curl
- [host]/delete/MultiNest_40ecad7d-41be-48bc-9d87-131f894052a8_nlfsvY</br>
-</br>
-* Possible improvements:</br>
-    Authentication using OpenID. This would allow to query users jobs.
-    With</br>
-    addition of "Name" job atribute this would allow to generate a user
-    readable</br>
-    job list.</br>
-"""
-    return help
+    """Main page."""
+    msg = """Welcome to CIŚ AppGateway"""
+    return msg
 
 
 @app.route('/submit', methods=['POST'])
 def submit():
+    """
+    Submit request. Expects a POST request (@ /submit URL) with data in
+    standard FORM format or as JSON payload identified by header:
+    'Content-Type' = 'application/json'. Returns JOB ID upon success, error
+    otherwise.
+    """
     if request.headers['Content-Type'] == 'application/json':
         return Server.submit(request.json)
     else:
@@ -84,14 +33,40 @@ def submit():
 
 @app.route('/status/<id>')
 def status(id):
+    """
+    Job status request. Expects GET request on /status/<id> URL, where <id> is
+    the Job ID returned during submission. Returns job status if job exists,
+    error otherwise:
+
+    * waiting
+    * queued
+    * running
+    * done
+    * failed
+    * aborted
+    * killed
+    """
     return Server.status(id)
 
 
 @app.route('/output/<id>')
 def output(id):
+    """
+    Job output request. Expects GET request on /output/<id> URL, where <id> is
+    the Job ID returned during submission. Returns base URL for job output
+    files. Client is expected to know the actual file names or browse contents
+    of the output directory at http server. If job does not exist returns an
+    error.
+    """
     return Server.output(id)
 
 
 @app.route('/delete/<id>')
 def delete(id):
+    """
+    Job delete request. Expects GET request on /delete/<id> URL, where <id> is
+    the Job ID returned during submission. If job is queued or running it will
+    be killed. All files related to the job will be removed. If job does not
+    exist returns an error.
+    """
     return Server.delete(id)

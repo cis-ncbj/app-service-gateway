@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
+"""
+Global configuration for CISAppGateway.
+"""
 
 import os
 try:
@@ -15,12 +18,14 @@ VERBOSE = 5
 
 class Config(dict):
     """
-    Global configuration for CISAppGateway.
+    Class responsible for configuration storage and initialization.
 
-    CISAppGateway.Config defines global instance of Config class: conf.
     Config stores variables as instace members e.g.:
+
         conf.config_file
+
     The variables are also accessible via dictionary interface e.g.:
+
         conf['conf_file']
     """
 
@@ -126,4 +131,6 @@ class Config(dict):
         log(VERBOSE, self)
 
 
+#: Global Config class instance. Use it to access the CISAppGateway
+#: configuration.
 conf = Config()

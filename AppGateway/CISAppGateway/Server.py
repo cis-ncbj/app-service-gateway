@@ -1,3 +1,8 @@
+"""
+Functions used to interact with CISAppServer. The communication is implemented
+using shared file system.
+"""
+
 import os
 import tempfile
 import uuid
