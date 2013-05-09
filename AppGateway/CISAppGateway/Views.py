@@ -61,6 +61,19 @@ def output(id):
     return Server.output(id)
 
 
+@app.route('/progress/<id>')
+def progress(id):
+    """
+    Job progress request. Expects GET request on /progress/<id> URL, where <id>
+    is the Job ID returned during submission. Returns contents of
+    "progress.log" file if it was created by the job. This file should contain
+    job log or info about its progress. For jobs that do not generate
+    "progress.log" the "output.log" is returned when job enters 'done' or
+    'failed' state. If job does not exist returns an error.
+    """
+    return Server.progress(id)
+
+
 @app.route('/delete/<id>')
 def delete(id):
     """
