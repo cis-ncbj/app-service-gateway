@@ -50,7 +50,6 @@ class Config(dict):
         self.service_states = (
             'waiting', 'queued', 'running',
             'done', 'failed', 'aborted', 'killed',
-            'removed'
         )
         #: Supported services
         self.allowed_services = ('Test', 'MultiNest', 'EPRCore')
@@ -58,11 +57,12 @@ class Config(dict):
         self.gate_url_output = 'http://localhost:8000/'
         #: Path to the shared storage used as communication medium with
         #: AppServer
-        self.gate_path_shared = 'Queue'
+        self.gate_path_shared = 'Shared'
         #: Path where jobs output will be stored
         self.gate_path_output = 'Output'
         self.gate_path_jobs = None
         self.gate_path_exit = None
+        self.gate_path_delete = None
         self.gate_path_waiting = None
         self.gate_path_queued = None
         self.gate_path_running = None
@@ -70,7 +70,6 @@ class Config(dict):
         self.gate_path_failed = None
         self.gate_path_aborted = None
         self.gate_path_killed = None
-        self.gate_path_removed = None
         self.gate_path = {
             "waiting": None,
             "queued": None,
@@ -79,7 +78,6 @@ class Config(dict):
             "failed": None,
             "aborted": None,
             "killed": None,
-            "removed": None
         }
 
     def load(self, conf_name=None):
@@ -111,6 +109,7 @@ class Config(dict):
         # Generate subdir names
         self.gate_path_jobs = os.path.join(self.gate_path_shared, 'jobs')
         self.gate_path_exit = os.path.join(self.gate_path_shared, 'exit')
+        self.gate_path_delete = os.path.join(self.gate_path_shared, 'delete')
         self.gate_path_waiting = os.path.join(self.gate_path_shared, 'waiting')
         self.gate_path_queued = os.path.join(self.gate_path_shared, 'queued')
         self.gate_path_running = os.path.join(self.gate_path_shared, 'running')
@@ -118,7 +117,6 @@ class Config(dict):
         self.gate_path_failed = os.path.join(self.gate_path_shared, 'failed')
         self.gate_path_aborted = os.path.join(self.gate_path_shared, 'aborted')
         self.gate_path_killed = os.path.join(self.gate_path_shared, 'killed')
-        self.gate_path_removed = os.path.join(self.gate_path_shared, 'removed')
         self.gate_path = {
             "waiting": self.gate_path_waiting,
             "queued": self.gate_path_queued,
@@ -127,7 +125,6 @@ class Config(dict):
             "failed": self.gate_path_failed,
             "aborted": self.gate_path_aborted,
             "killed": self.gate_path_killed,
-            "removed": self.gate_path_removed
         }
 
         log(VERBOSE, self)

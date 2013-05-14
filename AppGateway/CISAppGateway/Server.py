@@ -91,7 +91,7 @@ def status(id):
 
     try:
         # Hide jobs scheduled for removal
-        if os.path.exists(os.path.join(conf.gate_path_removed, id)):
+        if os.path.exists(os.path.join(conf.gate_path_delete, id)):
             debug("Job marked for removal")
             return "Error: Job with ID:%s not found" % id
         # Handle remaining states
@@ -142,7 +142,7 @@ def output(id):
         warning("@output - Job ID not found")
         return "Error: Job with ID:%s not found" % id
 
-    if os.path.exists(os.path.join(conf.gate_path_removed, id)):
+    if os.path.exists(os.path.join(conf.gate_path_delete, id)):
         debug("@output - Job marked for removal")
         return "Error: Job with ID:%s not found" % id
 
@@ -169,7 +169,7 @@ def progress(id):
         warning("@output - Job ID not found")
         return "Error: Job with ID:%s not found" % id
 
-    if os.path.exists(os.path.join(conf.gate_path_removed, id)):
+    if os.path.exists(os.path.join(conf.gate_path_delete, id)):
         debug("@output - Job marked for removal")
         return "Error: Job with ID:%s not found" % id
 
@@ -208,13 +208,13 @@ def delete(id):
         warning("@delete - Job ID not found")
         return "Error: Job with ID:%s not found" % id
 
-    if os.path.exists(os.path.join(conf.gate_path_removed, id)):
+    if os.path.exists(os.path.join(conf.gate_path_delete, id)):
         warning("@delete - Job already marked for removal")
         return "Error: Job with ID:%s not found" % id
 
     try:
         os.symlink(os.path.join(conf.gate_path_jobs, id),
-                   os.path.join(conf.gate_path_removed, id))
+                   os.path.join(conf.gate_path_delete, id))
     except:
         error("@delete - Unable to mark job for removal", exc_info=True)
         return("Error: Unable to mark job %s for removal" % id)
