@@ -4,17 +4,17 @@
     // ****************
     //
     // Logging level (default: INFO)
-    //"log_level" = 'INFO',
+    //"log_level" : "INFO",
     //
     // Log output file name (default: None)
-    //"log_output" = '/tmp/CISAppGateway.log',
+    //"log_output" : "/tmp/CISAppGateway.log",
     //
     // **********************
     // Services/Apps settings
     // **********************
     //
     // Supported services
-    //"allowed_services" = ['Test', 'MultiNest', 'EPRCore'],
+    //"allowed_services" : ["Test", "MultiNest", "EPRCore"],
     //
     // ****************
     // Gateway settings
@@ -22,15 +22,15 @@
     //
     // URL where output files are accessible to users
     // (default: http://localhost:8000/)
-    //"gate_url_output" = 'http://localhost:8000/',
+    //"gate_url_output" : "http://localhost:8000/",
     //
     // Path to the shared storage used as communication medium with AppServer,
-    // for WSGI we probably need an absolute path (default: Queue)
-    //"gate_path_shared" = 'Queue',
+    // for WSGI we probably need an absolute path (default: Shared)
+    //"gate_path_shared" : "Shared",
     //
     // Path where jobs output will be stored, for WSGI we probably need an
     // absolute path (default: Output)
-    //"gate_path_output" = 'Output',
+    //"gate_path_output" : "Output",
     //
     // ***
     // END
