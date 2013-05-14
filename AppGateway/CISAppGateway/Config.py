@@ -53,6 +53,7 @@ class Config(dict):
         )
         #: Supported services
         self.allowed_services = ('Test', 'MultiNest', 'EPRCore')
+        #: URL where output files are accessible to users
         self.gate_url_output = 'http://localhost:8000/'
         #: Path to the shared storage used as communication medium with
         #: AppServer
