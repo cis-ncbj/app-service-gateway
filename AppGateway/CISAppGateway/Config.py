@@ -5,6 +5,7 @@ Global configuration for CISAppGateway.
 """
 
 import os
+import re
 try:
     import json
 except:
@@ -95,7 +96,7 @@ class Config(dict):
             debug("@Config - Loading global configuration: %s" % conf_name)
             self.config_file = conf_name
             with open(self.config_file) as _conf_file:
-                _conf = json.load(_conf_file)
+                _conf = self.json_load(_conf_file)
             log(VERBOSE, json.dumps(_conf))
             self.update(_conf)
 
@@ -130,6 +131,40 @@ class Config(dict):
         }
 
         log(VERBOSE, self)
+
+    def json_load(self, filename):
+        """ Parse a JSON file
+            First remove comments and then use the json module package
+            Comments look like :
+                // ...
+            or
+                /*
+                ...
+                */
+
+            Based on:
+            http://www.lifl.fr/~riquetd/parse-a-json-file-with-comments.html
+            Much faster than https://github.com/getify/JSON.minify and
+            https://gist.github.com/WizKid/1170297
+        """
+        with open(filename) as f:
+            content = ''.join(f.readlines())
+
+            # Regular expression for comment
+            comment_re = re.compile(
+                '(^)?[^\S\n]*/(?:\*(.*?)\*/[^\S\n]*|/[^\n]*)($)?',
+                re.DOTALL | re.MULTILINE
+            )
+
+            ## Looking for comments
+            match = comment_re.search(content)
+            while match:
+                # single line comment
+                content = content[:match.start()] + content[match.end():]
+                match = comment_re.search(content)
+
+            # Return json file
+            return json.loads(content)
 
 
 #: Global Config class instance. Use it to access the CISAppGateway
