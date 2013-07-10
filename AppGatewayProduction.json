@@ -22,7 +22,7 @@
     //
     // URL where output files are accessible to users
     // (default: http://localhost:8000/)
-    "gate_url_output" : "https:\/\/app-gw.cis.gov.pl/output",
+    "gate_url_output" : "http:\/\/app-gw.cis.gov.pl/output",
     //
     // Path to the shared storage used as communication medium with AppServer,
     // for WSGI we probably need an absolute path (default: Shared)
