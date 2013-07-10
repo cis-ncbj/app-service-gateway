@@ -1,0 +1,41 @@
+{
+    // ****************
+    // Logging settings
+    // ****************
+    //
+    // Logging level (default: INFO)
+    //"log_level" : "INFO",
+    //
+    // Log output file name (default: None)
+    //"log_output" : "/tmp/CISAppGatewayDevel.log",
+    //
+    // **********************
+    // Services/Apps settings
+    // **********************
+    //
+    // Supported services
+    //"allowed_services" : ["Test", "MultiNest", "EPRCore"],
+    //
+    // ****************
+    // Gateway settings
+    // ****************
+    //
+    // URL where output files are accessible to users
+    // (default: http://localhost:8000/)
+    "gate_url_output" : "http:\/\/app-gw.cis.gov.pl/output-devel",
+    //
+    // Path to the shared storage used as communication medium with AppServer,
+    // for WSGI we probably need an absolute path (default: Shared)
+    "gate_path_shared" : "/mnt/app_gw/Devel/Shared",
+    //
+    // Path where jobs output will be stored, for WSGI we probably need an
+    // absolute path (default: Output)
+    "gate_path_output" : "/mnt/app_gw/Devel/Output",
+    //
+    // ***
+    // END
+    // ***
+    //
+    // Dummy item just to make json parser always happy :-D
+    "DUMMY" : 0
+}
