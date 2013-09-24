@@ -14,7 +14,7 @@
     // **********************
     //
     // Supported services
-    //"allowed_services" : ["Test", "MultiNest", "EPRCore"],
+    "allowed_services" : ["Test", "MultiNest", "PWRCore"],
     //
     // ****************
     // Gateway settings
