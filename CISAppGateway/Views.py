@@ -83,3 +83,13 @@ def delete(id):
     exist returns an error.
     """
     return Server.delete(id)
+
+
+@app.route('/kill/<id>')
+def kill(id):
+    """
+    Job kill request. Expects GET request on /kill/<id> URL, where <id> is
+    the Job ID returned during submission. If job is queued or running it will
+    be killed. If job does not exist or has finished returns an error.
+    """
+    return Server.kill(id)

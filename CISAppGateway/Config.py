@@ -63,6 +63,7 @@ class Config(dict):
         self.gate_path_jobs = None
         self.gate_path_exit = None
         self.gate_path_delete = None
+        self.gate_path_stop = None
         self.gate_path_waiting = None
         self.gate_path_queued = None
         self.gate_path_running = None
@@ -110,6 +111,7 @@ class Config(dict):
         self.gate_path_jobs = os.path.join(self.gate_path_shared, 'jobs')
         self.gate_path_exit = os.path.join(self.gate_path_shared, 'exit')
         self.gate_path_delete = os.path.join(self.gate_path_shared, 'delete')
+        self.gate_path_stop = os.path.join(self.gate_path_shared, 'stop')
         self.gate_path_waiting = os.path.join(self.gate_path_shared, 'waiting')
         self.gate_path_queued = os.path.join(self.gate_path_shared, 'queued')
         self.gate_path_running = os.path.join(self.gate_path_shared, 'running')

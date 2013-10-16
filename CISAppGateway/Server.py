@@ -181,7 +181,7 @@ def progress(id):
         with open(_progress_log) as _log:
             return ''.join(_log.readlines())
     # If no progress.log was found return contents of output.log
-    elif (os.path.exists(os.path.join(conf.gate_path_done, id)) or \
+    elif (os.path.exists(os.path.join(conf.gate_path_done, id)) or
           os.path.exists(os.path.join(conf.gate_path_failed, id))) and \
             os.path.exists(_output_log):
         with open(_output_log) as _log:
@@ -219,4 +219,38 @@ def delete(id):
         error("@delete - Unable to mark job for removal", exc_info=True)
         return("Error: Unable to mark job %s for removal" % id)
 
-    return "success"
+    return "Success"
+
+
+def kill(id):
+    """
+    Request job idendified with id to be killed.
+
+    :param id: ID of job to be killed
+    """
+
+    # Check if the job exists (file with it's id should be present in jobs
+    # subdir)
+    debug("@kill - Job remove request %s" % id)
+    if not os.path.isfile(os.path.join(conf.gate_path_jobs, id)):
+        warning("@kill - Job ID not found")
+        return "Error: Job with ID:%s not found" % id
+
+    if os.path.exists(os.path.join(conf.gate_path_stop, id)):
+        warning("@kill - Job already marked for a kill")
+        return "Error: Job with ID:%s not found" % id
+
+    if os.path.exists(os.path.join(conf.gate_path_waiting, id)) or \
+       os.path.exists(os.path.join(conf.gate_path_queued, id)) or \
+       os.path.exists(os.path.join(conf.gate_path_running, id)):
+        try:
+            os.symlink(os.path.join(conf.gate_path_jobs, id),
+                       os.path.join(conf.gate_path_stop, id))
+        except:
+            error("@kill - Unable to mark job for a kill", exc_info=True)
+            return("Error: Unable to mark job %s for a kill" % id)
+    else:
+        warning("@kill - Job already finished")
+        return "Error: No active job with ID:%s found" % id
+
+    return "Success"
