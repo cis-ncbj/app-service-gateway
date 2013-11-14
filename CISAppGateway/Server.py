@@ -79,8 +79,8 @@ def status(id):
 
     :param id: Job id to check
     :return: Job status [Waiting, Queued, Running, Done, Failed, Killed,
-        Aborted]. For Done, Failed and Aborted states additional info is
-        provided after ":". Returns Error string if id does not exist.
+        Aborted]. For Done, Failed, Killed and Aborted states additional info
+        is provided after ":". Returns Error string if id does not exist.
     """
     # Check if the job exists (file with it's id should be present in jobs
     # subdir)
@@ -116,10 +116,10 @@ def status(id):
         error("@status - Unable to check job status", exc_info=True)
         return "Error: Unable to check job status"
 
-    if _state in ('aborted', 'failed', 'done'):
+    if _state in ('aborted', 'failed', 'done', 'killed'):
         try:
             with open(os.path.join(conf.gate_path_exit, id)) as _status_file:
-                return "".join(_status_file.readlines())
+                return "".join(_status_file.readlines().strip())
         except:
             error("@status - Unable to read job exit code", exc_info=True)
             return "Error: Unable to extract job exit code"
