@@ -119,7 +119,7 @@ def status(id):
     if _state in ('aborted', 'failed', 'done', 'killed'):
         try:
             with open(os.path.join(conf.gate_path_exit, id)) as _status_file:
-                return "".join(_status_file.readlines().strip())
+                return "".join(_status_file.readlines()).strip()
         except:
             error("@status - Unable to read job exit code", exc_info=True)
             return "Error: Unable to extract job exit code"
