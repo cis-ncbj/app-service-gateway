@@ -48,7 +48,7 @@ class Config(dict):
         #: Valid job states as well as names of directories on shared storage
         #: that are used to monitor job states
         self.service_states = (
-            'waiting', 'queued', 'running',
+            'waiting', 'queued', 'running', 'closing', 'cleanup',
             'done', 'failed', 'aborted', 'killed',
         )
         #: Supported services
@@ -67,6 +67,8 @@ class Config(dict):
         self.gate_path_waiting = None
         self.gate_path_queued = None
         self.gate_path_running = None
+        self.gate_path_closing = None
+        self.gate_path_cleanup = None
         self.gate_path_done = None
         self.gate_path_failed = None
         self.gate_path_aborted = None
@@ -75,6 +77,8 @@ class Config(dict):
             "waiting": None,
             "queued": None,
             "running": None,
+            "closing": None,
+            "cleanup": None,
             "done": None,
             "failed": None,
             "aborted": None,
@@ -115,6 +119,8 @@ class Config(dict):
         self.gate_path_waiting = os.path.join(self.gate_path_shared, 'waiting')
         self.gate_path_queued = os.path.join(self.gate_path_shared, 'queued')
         self.gate_path_running = os.path.join(self.gate_path_shared, 'running')
+        self.gate_path_closing = os.path.join(self.gate_path_shared, 'closing')
+        self.gate_path_cleanup = os.path.join(self.gate_path_shared, 'cleanup')
         self.gate_path_done = os.path.join(self.gate_path_shared, 'done')
         self.gate_path_failed = os.path.join(self.gate_path_shared, 'failed')
         self.gate_path_aborted = os.path.join(self.gate_path_shared, 'aborted')
@@ -123,6 +129,8 @@ class Config(dict):
             "waiting": self.gate_path_waiting,
             "queued": self.gate_path_queued,
             "running": self.gate_path_running,
+            "closing": self.gate_path_closing,
+            "cleanup": self.gate_path_cleanup,
             "done": self.gate_path_done,
             "failed": self.gate_path_failed,
             "aborted": self.gate_path_aborted,

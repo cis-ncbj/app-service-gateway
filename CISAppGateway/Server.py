@@ -103,6 +103,10 @@ def status(id):
             _state = 'done'
         elif os.path.exists(os.path.join(conf.gate_path_killed, id)):
             _state = 'killed'
+        elif os.path.exists(os.path.join(conf.gate_path_cleanup, id)):
+            _state = 'cleanup'
+        elif os.path.exists(os.path.join(conf.gate_path_closing, id)):
+            _state = 'closing'
         elif os.path.exists(os.path.join(conf.gate_path_running, id)):
             _state = 'running'
         elif os.path.exists(os.path.join(conf.gate_path_queued, id)):
