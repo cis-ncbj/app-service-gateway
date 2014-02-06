@@ -90,8 +90,12 @@ def status(id):
         return "Error: Job with ID:%s not found" % id
 
     try:
+        # Check if the job requested deprecated API
+        _old_api = False
+        if os.path.exists(os.path.join(conf.gate_path_flag_old_api, id)):
+            _old_api = True
         # Hide jobs scheduled for removal
-        if os.path.exists(os.path.join(conf.gate_path_delete, id)):
+        if os.path.exists(os.path.join(conf.gate_path_flag_delete, id)):
             debug("Job marked for removal")
             return "Error: Job with ID:%s not found" % id
         # Handle remaining states
@@ -103,6 +107,16 @@ def status(id):
             _state = 'done'
         elif os.path.exists(os.path.join(conf.gate_path_killed, id)):
             _state = 'killed'
+        elif os.path.exists(os.path.join(conf.gate_path_closing, id)):
+            if _old_api:
+                _state = 'running'
+            else:
+                _state = 'closing'
+        elif os.path.exists(os.path.join(conf.gate_path_cleanup, id)):
+            if _old_api:
+                _state = 'running'
+            else:
+                _state = 'cleanup'
         elif os.path.exists(os.path.join(conf.gate_path_running, id)):
             _state = 'running'
         elif os.path.exists(os.path.join(conf.gate_path_queued, id)):
@@ -142,7 +156,7 @@ def output(id):
         warning("@output - Job ID not found")
         return "Error: Job with ID:%s not found" % id
 
-    if os.path.exists(os.path.join(conf.gate_path_delete, id)):
+    if os.path.exists(os.path.join(conf.gate_path_flag_delete, id)):
         debug("@output - Job marked for removal")
         return "Error: Job with ID:%s not found" % id
 
@@ -169,7 +183,7 @@ def progress(id):
         warning("@output - Job ID not found")
         return "Error: Job with ID:%s not found" % id
 
-    if os.path.exists(os.path.join(conf.gate_path_delete, id)):
+    if os.path.exists(os.path.join(conf.gate_path_flag_delete, id)):
         debug("@output - Job marked for removal")
         return "Error: Job with ID:%s not found" % id
 
@@ -208,13 +222,13 @@ def delete(id):
         warning("@delete - Job ID not found")
         return "Error: Job with ID:%s not found" % id
 
-    if os.path.exists(os.path.join(conf.gate_path_delete, id)):
+    if os.path.exists(os.path.join(conf.gate_path_flag_delete, id)):
         warning("@delete - Job already marked for removal")
         return "Error: Job with ID:%s not found" % id
 
     try:
         os.symlink(os.path.join(conf.gate_path_jobs, id),
-                   os.path.join(conf.gate_path_delete, id))
+                   os.path.join(conf.gate_path_flag_delete, id))
     except:
         error("@delete - Unable to mark job for removal", exc_info=True)
         return("Error: Unable to mark job %s for removal" % id)
@@ -236,7 +250,7 @@ def kill(id):
         warning("@kill - Job ID not found")
         return "Error: Job with ID:%s not found" % id
 
-    if os.path.exists(os.path.join(conf.gate_path_stop, id)):
+    if os.path.exists(os.path.join(conf.gate_path_flag_stop, id)):
         warning("@kill - Job already marked for a kill")
         return "Error: Job with ID:%s not found" % id
 
@@ -245,7 +259,7 @@ def kill(id):
        os.path.exists(os.path.join(conf.gate_path_running, id)):
         try:
             os.symlink(os.path.join(conf.gate_path_jobs, id),
-                       os.path.join(conf.gate_path_stop, id))
+                       os.path.join(conf.gate_path_flag_stop, id))
         except:
             error("@kill - Unable to mark job for a kill", exc_info=True)
             return("Error: Unable to mark job %s for a kill" % id)
