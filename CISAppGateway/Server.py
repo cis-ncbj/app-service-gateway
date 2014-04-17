@@ -64,7 +64,7 @@ def submit(request):
         # Mark request as queued
         os.symlink(
             name,
-            os.path.join(conf.gate_path_waiting, os.path.basename(name))
+            os.path.join(conf.gate_path_new, os.path.basename(name))
         )
     except Exception as e:
         return "Error: Exception cought while creating job request: %s" % e
@@ -123,6 +123,11 @@ def status(id):
             _state = 'queued'
         elif os.path.exists(os.path.join(conf.gate_path_waiting, id)):
             _state = 'waiting'
+        elif os.path.exists(os.path.join(conf.gate_path_new, id)):
+            if _old_api:
+                _state = 'waiting'
+            else:
+                _state = 'new'
         else:
             error("@status - Job status missing")
             return "Error: Job with ID:%s not found" % id
@@ -132,7 +137,7 @@ def status(id):
 
     if _state in ('aborted', 'failed', 'done', 'killed'):
         try:
-            with open(os.path.join(conf.gate_path_exit, id)) as _status_file:
+            with open(os.path.join(conf.gate_path_opts, "message_" + id)) as _status_file:
                 return "".join(_status_file.readlines()).strip()
         except:
             error("@status - Unable to read job exit code", exc_info=True)
@@ -254,7 +259,8 @@ def kill(id):
         warning("@kill - Job already marked for a kill")
         return "Error: Job with ID:%s not found" % id
 
-    if os.path.exists(os.path.join(conf.gate_path_waiting, id)) or \
+    if os.path.exists(os.path.join(conf.gate_path_new, id)) or \
+       os.path.exists(os.path.join(conf.gate_path_waiting, id)) or \
        os.path.exists(os.path.join(conf.gate_path_queued, id)) or \
        os.path.exists(os.path.join(conf.gate_path_running, id)):
         try:

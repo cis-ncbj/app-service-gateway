@@ -48,7 +48,7 @@ class Config(dict):
         #: Valid job states as well as names of directories on shared storage
         #: that are used to monitor job states
         self.service_states = (
-            'waiting', 'queued', 'running', 'closing', 'cleanup',
+            'new', 'waiting', 'queued', 'running', 'closing', 'cleanup',
             'done', 'failed', 'aborted', 'killed',
         )
         #: Supported services
@@ -61,8 +61,9 @@ class Config(dict):
         #: Path where jobs output will be stored
         self.gate_path_output = 'Output'
         self.gate_path_jobs = None
-        self.gate_path_exit = None
+        self.gate_path_opts = None
         self.gate_path_flags = None
+        self.gate_path_new = None
         self.gate_path_waiting = None
         self.gate_path_queued = None
         self.gate_path_running = None
@@ -76,6 +77,7 @@ class Config(dict):
         self.gate_path_flag_stop = None
         self.gate_path_flag_old_api = None
         self.gate_path = {
+            "new": None,
             "waiting": None,
             "queued": None,
             "running": None,
@@ -115,8 +117,9 @@ class Config(dict):
 
         # Generate subdir names
         self.gate_path_jobs = os.path.join(self.gate_path_shared, 'jobs')
-        self.gate_path_exit = os.path.join(self.gate_path_shared, 'exit')
+        self.gate_path_opts = os.path.join(self.gate_path_shared, 'opts')
         self.gate_path_flags = os.path.join(self.gate_path_shared, 'flags')
+        self.gate_path_new = os.path.join(self.gate_path_shared, 'new')
         self.gate_path_waiting = os.path.join(self.gate_path_shared, 'waiting')
         self.gate_path_queued = os.path.join(self.gate_path_shared, 'queued')
         self.gate_path_running = os.path.join(self.gate_path_shared, 'running')
@@ -130,6 +133,7 @@ class Config(dict):
         self.gate_path_flag_stop = os.path.join(self.gate_path_flags, 'stop')
         self.gate_path_flag_old_api = os.path.join(self.gate_path_flags, 'old_api')
         self.gate_path = {
+            "new": self.gate_path_new,
             "waiting": self.gate_path_waiting,
             "queued": self.gate_path_queued,
             "running": self.gate_path_running,
