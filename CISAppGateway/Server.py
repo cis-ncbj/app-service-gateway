@@ -37,11 +37,13 @@ def submit(request):
     debug('Request %s' % json.dumps(request))
     # Request is required to define service keyword
     if 'service' not in request.keys():
+        debug('Error: Missing service name')
         return 'Error: Missing service name'
     debug('Service defined: %s' % request['service'])
 
     # Only request for supported services are processed
     if request['service'] not in conf.allowed_services:
+        debug('Error: Missing service name')
         return 'Error: Unsupported service'
     debug("Service selected: %s" % request['service'])
 
@@ -49,28 +51,36 @@ def submit(request):
         # Create file to store the input data
         # The file name is unique and will be used as request ID
         # Add UUID into the mix to allow for more then ~250k concurent ids
-        prefix = request['service'] + '_' + str(uuid.uuid4()) + '_'
-        (fd, name) = tempfile.mkstemp(prefix=prefix, dir=conf.gate_path_jobs)
-        f = os.fdopen(fd, 'w')
+        _prefix = request['service'] + '_' + str(uuid.uuid4()) + '_'
+        (_fd, _name) = tempfile.mkstemp(prefix=_prefix, dir=conf.gate_path_jobs)
+        _jid = os.path.basename(_name)
+        _f = os.fdopen(_fd, 'w')
         debug("Job ID file created")
         # Dump input data in JSON format (handle utf8 characters)
-        f.write(json.dumps(request, ensure_ascii=False).encode('utf-8'))
-        f.close()
+        _f.write(json.dumps(request, ensure_ascii=False).encode('utf-8'))
+        _f.close()
         # Workaround until webserver an jobmanager run as same user
-        _st = os.stat(name)
-        os.chmod(name, _st.st_mode | stat.S_IRGRP | stat.S_IWGRP |
+        _st = os.stat(_name)
+        os.chmod(_name, _st.st_mode | stat.S_IRGRP | stat.S_IWGRP |
                  stat.S_IROTH | stat.S_IWOTH)
         debug("Job request data written to Job ID file")
         # Mark request as queued
         os.symlink(
-            name,
-            os.path.join(conf.gate_path_new, os.path.basename(name))
+            _name,
+            os.path.join(conf.gate_path_new, _jid)
         )
+        # Mark deprecated API calls
+        if float(request["api"]) < conf.service_api:
+            debug("Job request uses deprecated API")
+            _path = os.path.join(conf.gate_path_flag_old_api, _jid)
+            os.symlink( _name, _path )
+
     except Exception as e:
+        error("Error: Exception cought while creating job request: %s" % e)
         return "Error: Exception cought while creating job request: %s" % e
 
-    debug("Return request id: %s" % os.path.basename(name))
-    return os.path.basename(name)
+    debug("Return request id: %s" % _jid)
+    return _jid
 
 
 def status(id):
@@ -78,9 +88,10 @@ def status(id):
     Check the status of a job.
 
     :param id: Job id to check
-    :return: Job status [Waiting, Queued, Running, Done, Failed, Killed,
-        Aborted]. For Done, Failed, Killed and Aborted states additional info
-        is provided after ":". Returns Error string if id does not exist.
+    :return: Job status [New, Waiting, Processing, Queued, Running, Closing,
+        Cleanup, Done, Failed, Killed, Aborted]. For Done, Failed, Killed and
+        Aborted states additional info is provided after ":".
+        Returns Error string if id does not exist.
     """
     # Check if the job exists (file with it's id should be present in jobs
     # subdir)
@@ -121,6 +132,11 @@ def status(id):
             _state = 'running'
         elif os.path.exists(os.path.join(conf.gate_path_queued, id)):
             _state = 'queued'
+        elif os.path.exists(os.path.join(conf.gate_path_processing, id)):
+            if _old_api:
+                _state = 'waiting'
+            else:
+                _state = 'processing'
         elif os.path.exists(os.path.join(conf.gate_path_waiting, id)):
             _state = 'waiting'
         elif os.path.exists(os.path.join(conf.gate_path_new, id)):
