@@ -48,9 +48,10 @@ class Config(dict):
         #: Valid job states as well as names of directories on shared storage
         #: that are used to monitor job states
         self.service_states = (
-            'waiting', 'queued', 'running', 'closing', 'cleanup',
-            'done', 'failed', 'aborted', 'killed',
+            'new', 'waiting', 'processing', 'queued', 'running', 'closing',
+            'cleanup', 'done', 'failed', 'aborted', 'killed',
         )
+        self.service_api = 2.0
         #: Supported services
         self.allowed_services = ('Test', 'MultiNest', 'EPRCore')
         #: URL where output files are accessible to users
@@ -61,10 +62,11 @@ class Config(dict):
         #: Path where jobs output will be stored
         self.gate_path_output = 'Output'
         self.gate_path_jobs = None
-        self.gate_path_exit = None
-        self.gate_path_delete = None
-        self.gate_path_stop = None
+        self.gate_path_opts = None
+        self.gate_path_flags = None
+        self.gate_path_new = None
         self.gate_path_waiting = None
+        self.gate_path_processing = None
         self.gate_path_queued = None
         self.gate_path_running = None
         self.gate_path_closing = None
@@ -73,8 +75,13 @@ class Config(dict):
         self.gate_path_failed = None
         self.gate_path_aborted = None
         self.gate_path_killed = None
+        self.gate_path_flag_delete = None
+        self.gate_path_flag_stop = None
+        self.gate_path_flag_old_api = None
         self.gate_path = {
+            "new": None,
             "waiting": None,
+            "processing": None,
             "queued": None,
             "running": None,
             "closing": None,
@@ -113,10 +120,11 @@ class Config(dict):
 
         # Generate subdir names
         self.gate_path_jobs = os.path.join(self.gate_path_shared, 'jobs')
-        self.gate_path_exit = os.path.join(self.gate_path_shared, 'exit')
-        self.gate_path_delete = os.path.join(self.gate_path_shared, 'delete')
-        self.gate_path_stop = os.path.join(self.gate_path_shared, 'stop')
+        self.gate_path_opts = os.path.join(self.gate_path_shared, 'opts')
+        self.gate_path_flags = os.path.join(self.gate_path_shared, 'flags')
+        self.gate_path_new = os.path.join(self.gate_path_shared, 'new')
         self.gate_path_waiting = os.path.join(self.gate_path_shared, 'waiting')
+        self.gate_path_processing = os.path.join(self.gate_path_shared, 'processing')
         self.gate_path_queued = os.path.join(self.gate_path_shared, 'queued')
         self.gate_path_running = os.path.join(self.gate_path_shared, 'running')
         self.gate_path_closing = os.path.join(self.gate_path_shared, 'closing')
@@ -125,8 +133,13 @@ class Config(dict):
         self.gate_path_failed = os.path.join(self.gate_path_shared, 'failed')
         self.gate_path_aborted = os.path.join(self.gate_path_shared, 'aborted')
         self.gate_path_killed = os.path.join(self.gate_path_shared, 'killed')
+        self.gate_path_flag_delete = os.path.join(self.gate_path_flags, 'delete')
+        self.gate_path_flag_stop = os.path.join(self.gate_path_flags, 'stop')
+        self.gate_path_flag_old_api = os.path.join(self.gate_path_flags, 'old_api')
         self.gate_path = {
+            "new": self.gate_path_new,
             "waiting": self.gate_path_waiting,
+            "processing": self.gate_path_processing,
             "queued": self.gate_path_queued,
             "running": self.gate_path_running,
             "closing": self.gate_path_closing,
